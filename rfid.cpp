@@ -33,6 +33,7 @@ RFID::~RFID()
 
 void RFID::closeport()
 {
+    m_mutex2.lock();
     qDebug() << "close port...";
     if(fd != -1)
     {
@@ -44,10 +45,12 @@ void RFID::closeport()
         }
         close(fd);
     }
+    m_mutex2.unlock();
 }
 
 void RFID::openport()
 {
+    m_mutex2.lock();
     qDebug() << "open port...";
     uint8_t buf[100];
     /* Set up serial port */
@@ -62,19 +65,41 @@ void RFID::openport()
         rf_light(fd, LED_GREEN);
         rf_beep(fd, FAST);
 
-        m_mutex.lock();
-        m_status = 2;
-        m_mutex.unlock();
-        emit connected(m_type);
+        setSuccess();
     }
     else
     {
         qDebug() << "open port failed...";
-        m_mutex.lock();
-        m_status = -1;
-        m_mutex.unlock();
-        emit disconnected(m_type);
+       setFail();
     }
+    m_mutex2.unlock();
+}
+
+void delay(int milliseconds)
+{
+    long pause;
+    clock_t now,then;
+
+    pause = milliseconds*(CLOCKS_PER_SEC/1000);
+    now = then = clock();
+    while( (now-then) < pause )
+        now = clock();
+}
+
+void inputSuccess(int fd)
+{
+        rf_beep(fd, FAST);
+        rf_light(fd, LED_GREEN);
+        delay(100);
+        rf_light(fd, LED_OFF);
+        delay(100);
+        rf_beep(fd, FAST);
+        rf_light(fd, LED_GREEN);
+        delay(100);
+        rf_light(fd, LED_OFF);
+        delay(1000);
+        rf_light(fd, LED_GREEN);
+
 }
 void RFID::run()
 {
@@ -89,8 +114,26 @@ void RFID::run()
             if(m_status != -1) // continue waiting
             {
                 m_mutex.unlock();
-                //qDebug() << "check card...";
-                // TODO: set m_status = 2 if success or -1 if fail
+                uint8_t status;
+                unsigned int card_no;
+                try {
+                    m_mutex2.lock();
+                    status = rf_request(fd);
+                    status = rf_anticoll(fd, &card_no);
+                    m_mutex2.unlock();
+                    if (status != 0)
+                    {
+                        //setFail();
+                    }
+                    else{
+                        qDebug() << card_no << "\n";
+                        printf("Card number: %u (0x%08x)\n", card_no, card_no);
+                        inputSuccess(fd);
+                    }
+                }  catch (std::exception& e) {
+                    setFail();
+                }
+
 
             }
         }

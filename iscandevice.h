@@ -22,6 +22,7 @@ protected:
 
     int m_status = 0; // 0: new, 1: rescan, -1: fail, ...:success
     QMutex m_mutex;
+    QMutex m_mutex2;
     QString m_type;
 };
 
