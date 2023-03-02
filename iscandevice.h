@@ -9,6 +9,7 @@ class IScanDevice : public QThread
 
 public:
     virtual void setRescan() = 0;
+    virtual void closeport() = 0;
 
 signals:
     void connected(QString type);

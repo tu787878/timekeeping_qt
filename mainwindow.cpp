@@ -30,6 +30,7 @@ void MainWindow::connectWidgets()
 void MainWindow::exit()
 {
     this->close();
+    m_machine->close();
 }
 
 void MainWindow::rescan()

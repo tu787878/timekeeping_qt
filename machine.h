@@ -18,6 +18,8 @@ public:
 
     void isScanning();
 
+    void close();
+
 public slots:
   void connected(QString type);
   void disconnected(QString type);

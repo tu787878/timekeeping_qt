@@ -27,11 +27,11 @@
 #include <assert.h>
 #include <stdint.h>
 #include <stdlib.h>
-
+#include <stdexcept>
 void comm_error()
 {
     fprintf(stderr, "Communication error, aborting!\n");
-    exit(1);
+    throw std::exception();
 }
 
 /*
@@ -45,14 +45,18 @@ int open_port(void)
     int fd; /* File descriptor for the port */
 
 
-    fd = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_NDELAY);
+    fd = open("/dev/tcg_rfid", O_RDWR | O_NOCTTY | O_NDELAY);
     if (fd == -1)
     {
-        /*
-         * Could not open the port.
-         */
-
-        perror("open_port: Unable to open /dev/ttyUSB0 - ");
+        fd = open("/dev/ttyUSB1", O_RDWR | O_NOCTTY | O_NDELAY);
+        if (fd == -1)
+        {
+            return fd;
+        }
+        else
+        {
+            fcntl(fd, F_SETFL, 0);
+        }
     }
     else
     {

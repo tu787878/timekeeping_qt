@@ -25,6 +25,14 @@ Machine::~Machine()
 
 }
 
+void Machine::close()
+{
+    for(auto scanDevice :  m_scanDevices)
+    {
+        scanDevice->closeport();
+    }
+}
+
 void Machine::startScan()
 {
     for(auto scanDevice :  m_scanDevices)
