@@ -120,7 +120,7 @@ void RFID::run()
                     m_mutex2.lock();
                     status = rf_request(fd);
                     status = rf_anticoll(fd, &card_no);
-                    m_mutex2.unlock();
+
                     if (status != 0)
                     {
                         //setFail();
@@ -128,15 +128,17 @@ void RFID::run()
                     else{
                         qDebug() << card_no << "\n";
                         printf("Card number: %u (0x%08x)\n", card_no, card_no);
+                        emit scanResult(QString::number(card_no), m_type);
                         inputSuccess(fd);
                     }
                 }  catch (std::exception& e) {
                     setFail();
                 }
 
-
+                m_mutex2.unlock();
             }
         }
+        delay(500);
     }
 }
 

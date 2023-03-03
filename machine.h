@@ -13,12 +13,9 @@ public:
     ~Machine();
 
     void startScan();
-    void stopScan();
     void rescan();
-
-    void isScanning();
-
     void close();
+    void getCalendar(QString user_id);
 
 public slots:
   void connected(QString type);
@@ -27,15 +24,21 @@ public slots:
 
 signals:
   void deviceStatusChanged(QString type);
-  void scanStatusChanged(QString id, QString type);
+  void scanSuccess(QString name, QString user_id, QString time);
+  void scanFail(QString error);
+  void updateStatusBar(QString text, QString rgb);
+  void receivedCalendar();
 
 private:
-    void callBack();
     void connectDevices();
+    void connectServer();
 
-    int m_status;
+    int m_status; // 0: active, 1: not registered, 2: not exist license , 3: server error
     ApiHandle* m_apiHandle;
     QList<IScanDevice*> m_scanDevices;
+    QString m_license_path = "/home/pi/Desktop/License";
+    QString m_url_server = "";
+    QString m_device_token = "";
 };
 
 #endif // MACHINE_H
