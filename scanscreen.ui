@@ -20,14 +20,14 @@
    <property name="geometry">
     <rect>
      <x>-1</x>
-     <y>79</y>
+     <y>169</y>
      <width>1011</width>
-     <height>111</height>
+     <height>71</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QLabel" name="timeLabel">
+     <widget class="QLabel" name="nameLabel">
       <property name="text">
        <string>V T N</string>
       </property>
@@ -37,7 +37,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="nameLabel">
+     <widget class="QLabel" name="timeLabel">
       <property name="text">
        <string>12:12 12.12.2022</string>
       </property>
@@ -65,9 +65,9 @@
    <property name="geometry">
     <rect>
      <x>-1</x>
-     <y>249</y>
+     <y>289</y>
      <width>1011</width>
-     <height>231</height>
+     <height>211</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -84,7 +84,7 @@
    <property name="geometry">
     <rect>
      <x>440</x>
-     <y>210</y>
+     <y>250</y>
      <width>121</width>
      <height>30</height>
     </rect>
@@ -92,6 +92,28 @@
    <property name="text">
     <string>Show calendar</string>
    </property>
+  </widget>
+  <widget class="QWidget" name="verticalLayoutWidget_3">
+   <property name="geometry">
+    <rect>
+     <x>-1</x>
+     <y>10</y>
+     <width>1011</width>
+     <height>151</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_3">
+    <item>
+     <widget class="QLabel" name="logo">
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>

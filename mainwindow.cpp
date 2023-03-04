@@ -19,7 +19,11 @@ MainWindow::MainWindow(QWidget *parent)
     m_timer = new QTimer(this);
     connect(m_timer, &QTimer::timeout, this, &MainWindow::toStandBy);
 
+    m_timer_status = new QTimer(this);
+    connect(m_timer_status, &QTimer::timeout, this, &MainWindow::resetStatus);
+
     connectWidgets();
+    m_machine->getDevicecStatus();
 }
 
 void MainWindow::connectWidgets()
@@ -48,23 +52,31 @@ void MainWindow::rescan()
     m_machine->rescan();
 }
 
-void MainWindow::onDeviceStatusChanged(QString type)
+void MainWindow::onDeviceStatusChanged(QStringList data)
 {
-
+    m_stanbyscreen.setDevices(data);
 }
 
 void MainWindow::setStatusBarText(QString text, QString rgb)
 {
     ui->statusbar->showMessage(text);
     ui->statusbar->setStyleSheet("background-color: "+rgb+";");
+    m_timer_status->start(2000);
 }
 
-void MainWindow::onScanSuccess(QString name, QString user_id, QString time)
+void MainWindow::resetStatus()
+{
+    ui->statusbar->showMessage("Waiting");
+    ui->statusbar->setStyleSheet("background-color: rgb(000,255,0);");
+    m_timer_status->stop();
+}
+
+void MainWindow::onScanSuccess(QString name, QString time, QString type, QString userid)
 {
     m_scanscreen.setNameLabel(name);
-    m_scanscreen.setTimeLabel(time);
+    m_scanscreen.setTimeLabel(type + ": " + time);
     m_scanscreen.hideCalendar();
-    m_current_user_id=user_id;
+    m_current_user_id=userid;
     ui->stackedWidget->setCurrentIndex(1);
     ui->statusbar->showMessage("Success...");
     ui->statusbar->setStyleSheet("background-color: rgb(135,206,250);");
@@ -83,6 +95,7 @@ void MainWindow::onScanFail(QString error)
 {
     ui->statusbar->showMessage("Error: " +error);
     ui->statusbar->setStyleSheet("background-color: rgb(255, 0, 0);");
+    m_stanbyscreen.setMessageError(error);
 }
 
 void MainWindow::runMachine()

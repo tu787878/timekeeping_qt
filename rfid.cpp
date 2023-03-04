@@ -110,14 +110,13 @@ void RFID::run()
         if(fd!=-1)
         {
             // new start
-            m_mutex.lock();
             if(m_status != -1) // continue waiting
             {
-                m_mutex.unlock();
+
+                m_mutex2.lock();
                 uint8_t status;
                 unsigned int card_no;
                 try {
-                    m_mutex2.lock();
                     status = rf_request(fd);
                     status = rf_anticoll(fd, &card_no);
 

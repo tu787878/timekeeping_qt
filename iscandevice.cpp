@@ -15,3 +15,13 @@ void IScanDevice::setSuccess()
     m_mutex.unlock();
     emit connected(m_type);
 }
+
+bool IScanDevice::isOk()
+{
+    return m_status != -1;
+}
+
+QString IScanDevice::getType()
+{
+    return m_type;
+}

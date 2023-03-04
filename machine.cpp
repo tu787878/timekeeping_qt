@@ -8,6 +8,7 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QNetworkReply>
+#include <QJsonArray>
 
 
 Machine::Machine(QObject* parent) : QObject(parent)
@@ -17,6 +18,7 @@ Machine::Machine(QObject* parent) : QObject(parent)
     connectDevices();
     connectServer();
     startScan();
+    updateDeviceStatus();
 }
 
 void Machine::connectDevices()
@@ -27,6 +29,17 @@ void Machine::connectDevices()
         connect(scanDevice, &IScanDevice::disconnected, this, &Machine::disconnected);
         connect(scanDevice, &IScanDevice::scanResult, this, &Machine::scanResult);
     }
+}
+
+void Machine::updateDeviceStatus()
+{
+    QStringList data;
+    for(auto scanDevice : m_scanDevices)
+    {
+        QString row = scanDevice->getType() + " : " + (scanDevice->isOk() ? "OK" : "ERROR");
+        data.append(row);
+    }
+    emit deviceStatusChanged(data);
 }
 
 void Machine::connectServer()
@@ -55,7 +68,48 @@ Machine::~Machine()
 void Machine::getCalendar(QString user_id)
 {
     qDebug() << "user_id: " << user_id;
+    emit updateStatusBar("Loading calendar...", "rgb(255,140,0)");
+
+    QNetworkAccessManager *mgr = new QNetworkAccessManager(this);
+    const QUrl url(m_url_server+"/calendar");
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QJsonObject obj;
+    obj["userId"] = user_id;
+    QJsonDocument doc(obj);
+    QByteArray data = doc.toJson();
+
+    QNetworkReply *reply = mgr->post(request, data);
+
+    QObject::connect(reply, &QNetworkReply::finished, [=](){
+        if(reply->error() == QNetworkReply::NoError){
+            QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+            QJsonObject obj = doc.object();
+            if(obj["code"].toDouble() == 0)
+            {
+                QJsonArray jsonArray = obj["data"].toArray();
+                foreach (const QJsonValue & value, jsonArray)
+                {
+                    QJsonObject jobj = value.toObject();
+
+                    qDebug() << jobj << "\n";
+
+                }
+            }
+            else
+            {
+                qDebug() << obj["message"];
+            }
+        }
+    });
+
     emit receivedCalendar();
+}
+
+void Machine::getDevicecStatus()
+{
+    updateDeviceStatus();
 }
 
 void Machine::close()
@@ -85,12 +139,14 @@ void Machine::rescan()
 void Machine::connected(QString type)
 {
     qDebug() << "connected: " + type;
-    emit deviceStatusChanged(type);
+    emit updateStatusBar(type + " is connected!", "rgb(000,255,000)");
+    updateDeviceStatus();
 }
 void Machine::disconnected(QString type)
 {
     qDebug() << "disconnected: " + type;
-    emit deviceStatusChanged(type);
+    emit updateStatusBar(type + " is disconnected!", "rgb(255,000,000)");
+    updateDeviceStatus();
 }
 
 void Machine::scanResult(QString id, QString type)
@@ -102,11 +158,16 @@ void Machine::scanResult(QString id, QString type)
     const QUrl url(m_url_server);
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QTime time = QTime::currentTime();
+    QString formattedTime = time.toString("hh:mm");
+    QDate date = QDate::currentDate();
+    QString dateStr = date.toString("yyyy-MM-dd");
 
     QJsonObject obj;
     obj["type"] = type;
     obj["cardNumber"] = id;
     obj["token"] = m_device_token;
+    obj["datetime"] = dateStr + " " + formattedTime;
     QJsonDocument doc(obj);
     QByteArray data = doc.toJson();
 
@@ -116,8 +177,19 @@ void Machine::scanResult(QString id, QString type)
         if(reply->error() == QNetworkReply::NoError){
             QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
             QJsonObject obj = doc.object();
+
             qDebug() << obj;
-            emit scanSuccess("Van Tu Nguyen", "test", "test");
+            if(obj["code"].toDouble() == 0)
+            {
+                QJsonValue val = obj.value(QString("data"));
+                QJsonObject item = val.toObject();
+                emit scanSuccess(item["name"].toString(), item["time"].toString(), item["type"].toString(), item["userId"].toString());
+            }
+            else
+            {
+                emit scanFail(obj["message"].toString());
+            }
+
         }
         else{
             QString err = reply->errorString();

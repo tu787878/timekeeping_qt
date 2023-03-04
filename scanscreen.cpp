@@ -7,6 +7,9 @@ ScanScreen::ScanScreen(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->calendarList->hide();
+    QPixmap pic("/home/pi/Downloads/SmallLogoBW.png");
+    pic.scaled(12,22,Qt::KeepAspectRatio);
+    ui->logo->setPixmap(pic);
 }
 
 ScanScreen::~ScanScreen()

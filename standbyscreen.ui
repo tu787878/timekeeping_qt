@@ -41,12 +41,12 @@
      <x>-1</x>
      <y>-1</y>
      <width>1011</width>
-     <height>251</height>
+     <height>311</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QLabel" name="label">
+     <widget class="QLabel" name="logo">
       <property name="text">
        <string>LOGO</string>
       </property>
@@ -56,7 +56,10 @@
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="label_2">
+     <widget class="QLabel" name="time">
+      <property name="styleSheet">
+       <string notr="true">font-size:33px</string>
+      </property>
       <property name="text">
        <string>DATE TIME</string>
       </property>
@@ -66,7 +69,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="label_3">
+     <widget class="QLabel" name="message">
       <property name="text">
        <string>MESSAGE</string>
       </property>
@@ -81,26 +84,36 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>530</y>
-     <width>91</width>
+     <y>440</y>
+     <width>111</width>
      <height>22</height>
     </rect>
    </property>
    <property name="text">
-    <string>RFID: OK</string>
+    <string>All Devices</string>
    </property>
   </widget>
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>90</x>
-     <y>530</y>
+     <x>100</x>
+     <y>440</y>
      <width>81</width>
      <height>21</height>
     </rect>
    </property>
    <property name="text">
     <string>Rescan</string>
+   </property>
+  </widget>
+  <widget class="QListWidget" name="listWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>470</y>
+     <width>171</width>
+     <height>81</height>
+    </rect>
    </property>
   </widget>
  </widget>

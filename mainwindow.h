@@ -21,13 +21,14 @@ public:
 private slots:
     void exit();
     void rescan();
-    void onDeviceStatusChanged(QString type);
+    void onDeviceStatusChanged(QStringList data);
     void onScanFail(QString error);
-    void onScanSuccess(QString name, QString user_id, QString time);
+    void onScanSuccess(QString name, QString time, QString type, QString userid);
     void toStandBy();
     void onGetCalendar();
     void onReceivedCalendar();
     void setStatusBarText(QString text, QString rgb);
+    void resetStatus();
 
 private:
     void runMachine();
@@ -40,6 +41,7 @@ private:
     StandByScreen m_stanbyscreen;
     QString m_current_user_id = "";
     QTimer* m_timer;
+    QTimer* m_timer_status;
 
 };
 #endif // MAINWINDOW_H

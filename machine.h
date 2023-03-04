@@ -16,6 +16,7 @@ public:
     void rescan();
     void close();
     void getCalendar(QString user_id);
+    void getDevicecStatus();
 
 public slots:
   void connected(QString type);
@@ -23,8 +24,8 @@ public slots:
   void scanResult(QString id, QString type);
 
 signals:
-  void deviceStatusChanged(QString type);
-  void scanSuccess(QString name, QString user_id, QString time);
+  void deviceStatusChanged(QStringList type);
+  void scanSuccess(QString name, QString time, QString type, QString userid);
   void scanFail(QString error);
   void updateStatusBar(QString text, QString rgb);
   void receivedCalendar();
@@ -32,6 +33,7 @@ signals:
 private:
     void connectDevices();
     void connectServer();
+    void updateDeviceStatus();
 
     int m_status; // 0: active, 1: not registered, 2: not exist license , 3: server error
     ApiHandle* m_apiHandle;

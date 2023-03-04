@@ -10,6 +10,8 @@ class IScanDevice : public QThread
 public:
     virtual void setRescan() = 0;
     virtual void closeport() = 0;
+    bool isOk();
+    QString getType();
 
 signals:
     void connected(QString type);
@@ -20,7 +22,7 @@ protected:
     void setFail();
     void setSuccess();
 
-    int m_status = 0; // 0: new, 1: rescan, -1: fail, ...:success
+    int m_status = -1; // -1: fail, ...:success
     QMutex m_mutex;
     QMutex m_mutex2;
     QString m_type;
