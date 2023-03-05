@@ -4,6 +4,8 @@
 #include "iscandevice.h"
 #include "apihandle.h"
 #include <QObject>
+#include <QJsonObject>
+#include <QJsonArray>
 
 class Machine : public QObject
 {
@@ -28,7 +30,8 @@ signals:
   void scanSuccess(QString name, QString time, QString type, QString userid);
   void scanFail(QString error);
   void updateStatusBar(QString text, QString rgb);
-  void receivedCalendar();
+  void receivedCalendar(QJsonArray jsonArray);
+  void receivedCalendarFail(QString error);
 
 private:
     void connectDevices();

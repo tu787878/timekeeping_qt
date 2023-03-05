@@ -2,6 +2,8 @@
 #define SCANSCREEN_H
 
 #include <QWidget>
+#include <QJsonArray>
+#include <QJsonObject>
 
 namespace Ui {
 class ScanScreen;
@@ -18,6 +20,7 @@ public:
     void setTimeLabel(QString time);
     void showCalendar();
     void hideCalendar();
+    void setItems(QJsonArray array);
 signals:
     void backToStandBy();
     void getCalendar();

@@ -5,10 +5,8 @@
 #include <QMessageBox>
 #include <QNetworkRequest>
 #include <QNetworkAccessManager>
-#include <QJsonObject>
 #include <QJsonDocument>
 #include <QNetworkReply>
-#include <QJsonArray>
 
 
 Machine::Machine(QObject* parent) : QObject(parent)
@@ -89,22 +87,17 @@ void Machine::getCalendar(QString user_id)
             if(obj["code"].toDouble() == 0)
             {
                 QJsonArray jsonArray = obj["data"].toArray();
-                foreach (const QJsonValue & value, jsonArray)
-                {
-                    QJsonObject jobj = value.toObject();
-
-                    qDebug() << jobj << "\n";
-
-                }
+                emit receivedCalendar(jsonArray);
             }
             else
             {
                 qDebug() << obj["message"];
+                emit receivedCalendarFail(obj["message"].toString());
             }
         }
     });
 
-    emit receivedCalendar();
+
 }
 
 void Machine::getDevicecStatus()

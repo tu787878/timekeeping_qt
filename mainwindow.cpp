@@ -39,6 +39,7 @@ void MainWindow::connectWidgets()
     connect(m_machine, &Machine::scanFail, this, &MainWindow::onScanFail);
     connect(m_machine, &Machine::updateStatusBar, this, &MainWindow::setStatusBarText);
     connect(m_machine, &Machine::receivedCalendar, this, &MainWindow::onReceivedCalendar);
+    connect(m_machine, &Machine::receivedCalendarFail, this, &MainWindow::onReceivedCalendarFail);
 }
 
 void MainWindow::exit()
@@ -74,12 +75,12 @@ void MainWindow::resetStatus()
 void MainWindow::onScanSuccess(QString name, QString time, QString type, QString userid)
 {
     m_scanscreen.setNameLabel(name);
-    m_scanscreen.setTimeLabel(type + ": " + time);
+    QDateTime datetime = QDateTime::fromString(time, Qt::ISODate);
+    m_scanscreen.setTimeLabel(type + ": " + datetime.toString("dd.MM.yyyy HH:mm"));
     m_scanscreen.hideCalendar();
     m_current_user_id=userid;
     ui->stackedWidget->setCurrentIndex(1);
-    ui->statusbar->showMessage("Success...");
-    ui->statusbar->setStyleSheet("background-color: rgb(135,206,250);");
+    setStatusBarText("Success...", "rgb(135,206,250)");
     m_timer->start(5000);
 }
 
@@ -93,8 +94,7 @@ void MainWindow::toStandBy()
 
 void MainWindow::onScanFail(QString error)
 {
-    ui->statusbar->showMessage("Error: " +error);
-    ui->statusbar->setStyleSheet("background-color: rgb(255, 0, 0);");
+    setStatusBarText("Error: " +error, "rgb(255, 0, 0)");
     m_stanbyscreen.setMessageError(error);
 }
 
@@ -109,10 +109,17 @@ void MainWindow::onGetCalendar()
     m_machine->getCalendar(m_current_user_id);
 }
 
-void MainWindow::onReceivedCalendar()
+void MainWindow::onReceivedCalendar(QJsonArray jsonArray)
 {
+    m_scanscreen.setItems(jsonArray);
     m_scanscreen.showCalendar();
-    m_timer->start(10000);
+    setStatusBarText("Success...", "rgb(135,206,250)");
+    //m_timer->start(10000);
+}
+
+void MainWindow::onReceivedCalendarFail(QString error)
+{
+    setStatusBarText("Error: " + error, "rgb(255,000,000)");
 }
 
 MainWindow::~MainWindow()

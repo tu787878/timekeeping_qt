@@ -63,7 +63,7 @@ void RFID::openport()
         rf_get_model(fd, sizeof(buf), buf);
         printf("Model: %s\n", buf);
         rf_light(fd, LED_GREEN);
-        rf_beep(fd, FAST);
+        //rf_beep(fd, FAST);
 
         setSuccess();
     }
@@ -128,7 +128,8 @@ void RFID::run()
                         qDebug() << card_no << "\n";
                         printf("Card number: %u (0x%08x)\n", card_no, card_no);
                         emit scanResult(QString::number(card_no), m_type);
-                        inputSuccess(fd);
+                        //inputSuccess(fd);
+                        delay(2000);
                     }
                 }  catch (std::exception& e) {
                     setFail();

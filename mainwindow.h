@@ -5,6 +5,7 @@
 #include "machine.h"
 #include "scanscreen.h"
 #include "standbyscreen.h"
+#include <QJsonArray>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -26,7 +27,8 @@ private slots:
     void onScanSuccess(QString name, QString time, QString type, QString userid);
     void toStandBy();
     void onGetCalendar();
-    void onReceivedCalendar();
+    void onReceivedCalendar(QJsonArray jsonArray);
+    void onReceivedCalendarFail(QString error);
     void setStatusBarText(QString text, QString rgb);
     void resetStatus();
 

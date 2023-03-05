@@ -72,11 +72,7 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
-     <widget class="QListWidget" name="calendarList">
-      <property name="flow">
-       <enum>QListView::LeftToRight</enum>
-      </property>
-     </widget>
+     <widget class="QTableWidget" name="calendarList"/>
     </item>
    </layout>
   </widget>
