@@ -67,14 +67,18 @@ void ScanScreen::setItems(QJsonArray jsonArray)
         QString row = "";
         foreach (const QJsonValue & timeLog, timeLogs)
         {
-            row = row + timeLog["timeFrom"].toString() + "-" + timeLog["timeTo"].toString()+ "\n";
+            if(timeLog["type"].toString() != "WORK")
+                row = row + timeLog["type"].toString() + ": ";
+            if(timeLog["info"].toString().isEmpty() ||  timeLog["info"].toString() == "CUSTOM"){
+                row = row + timeLog["timeFrom"].toString() + "-" + timeLog["timeTo"].toString()+ "\n";
+            }else{
+                row = row + timeLog["info"].toString() + "\n";
+            }
+
         }
         QTableWidgetItem* log = new QTableWidgetItem(row);
         log->setTextAlignment(Qt::AlignTop);
-        if(jobj["status"].toString() != "VALID")
-        {
-            log->setTextColor(QColor::fromRgb(255,0,0));
-        }
+        log->setTextColor(QColor::fromRgb(255,255,255));
         ui->calendarList->setItem(0, i, log);
         i++;
     }
@@ -91,7 +95,8 @@ void ScanScreen::setItems(QJsonArray jsonArray)
         c = m_checkout_color;
     }
 
-    ui->calendarList->setStyleSheet("QScrollBar:vertical { width: 30px;  background-color:'white'}QScrollBar:horizontal { height: 30px;  background-color:'white'}QScrollBar::handle:horizonal{background-color:"+c+";color:'grey'}QScrollBar::handle:vertical{background-color:"+c+";color:'grey'}QScrollBar::sub-page:horizontal{background-color:"+c+";color:black}QScrollBar::add-page:horizontall {background-color:"+c+";color:black}QScrollBar::add-line:horizontal {background-color:"+c+";color:black}QScrollBar::sub-line:horizontal{background-color:"+c+";color:black}");
+   // ui->calendarList->setStyleSheet("background-color:'white';QScrollBar:vertical { width: 30px;  background-color:"+c+"}QScrollBar:horizontal { height: 40px;  background-color:"+c+"}QScrollBar::handle:horizonal{background-color:'white';border: 1px solid grey;color:'black'}QScrollBar::handle:vertical{background-color:'white';border: 1px solid grey;color:'black'}");
+    ui->calendarList->setStyleSheet("QScrollBar:vertical { width: 30px; }QScrollBar:horizontal { height: 40px;  }QScrollBar::handle:horizonal{border: 2px solid grey;}QScrollBar::handle:vertical{border: 2px solid grey;}");
 
 }
 
