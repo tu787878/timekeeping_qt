@@ -21,6 +21,8 @@ public:
     void showCalendar();
     void hideCalendar();
     void setItems(QJsonArray array);
+    void setSettings(QString logo, QString checkInColor, QString checkOutColor);
+    void setIsCheckin(bool isCheckIn);
 signals:
     void backToStandBy();
     void getCalendar();
@@ -31,6 +33,10 @@ private slots:
 
 private:
     Ui::ScanScreen *ui;
+    QString m_checkin_color = "rgb(0, 255, 0)";
+    QString m_checkout_color = "rgb(0, 255, 0)";
+    QString m_logi_url = "/home/pi/Downloads/SmallLogoBW.png";
+    bool m_isCheckin = true;
 };
 
 #endif // SCANSCREEN_H

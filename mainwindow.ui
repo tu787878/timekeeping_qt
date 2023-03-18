@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>TCG Zeiterfassung</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color:&quot;white&quot;</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QStackedWidget" name="stackedWidget">
     <property name="geometry">

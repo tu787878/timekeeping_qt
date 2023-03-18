@@ -20,14 +20,18 @@
    <property name="geometry">
     <rect>
      <x>-1</x>
-     <y>169</y>
+     <y>159</y>
      <width>1011</width>
-     <height>71</height>
+     <height>96</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QLabel" name="nameLabel">
+      <property name="styleSheet">
+       <string notr="true">font-size:30px;
+color:&quot;white&quot;</string>
+      </property>
       <property name="text">
        <string>V T N</string>
       </property>
@@ -38,6 +42,10 @@
     </item>
     <item>
      <widget class="QLabel" name="timeLabel">
+      <property name="styleSheet">
+       <string notr="true">font-size:35px;
+color:&quot;white&quot;</string>
+      </property>
       <property name="text">
        <string>12:12 12.12.2022</string>
       </property>
@@ -51,11 +59,15 @@
   <widget class="QPushButton" name="backButton">
    <property name="geometry">
     <rect>
-     <x>910</x>
-     <y>520</y>
-     <width>91</width>
-     <height>30</height>
+     <x>890</x>
+     <y>510</y>
+     <width>111</width>
+     <height>41</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color:&quot;black&quot;;
+background-color:&quot;white&quot;</string>
    </property>
    <property name="text">
     <string>Back</string>
@@ -65,14 +77,33 @@
    <property name="geometry">
     <rect>
      <x>-1</x>
-     <y>289</y>
+     <y>319</y>
      <width>1011</width>
-     <height>211</height>
+     <height>181</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
-     <widget class="QTableWidget" name="calendarList"/>
+     <widget class="QTableWidget" name="calendarList">
+      <property name="styleSheet">
+       <string notr="true">QScrollBar:vertical { width: 30px;  background-color:&quot;white&quot;}
+QScrollBar:horizontal { height: 30px;  background-color:&quot;white&quot;}
+QScrollBar::handle:horizonal{
+   background-color:&quot;grey&quot;;
+  color:&quot;grey&quot;
+}
+QScrollBar::handle:vertical{
+    background-color:&quot;grey&quot;;
+    color:&quot;grey&quot;
+}</string>
+      </property>
+      <property name="verticalScrollMode">
+       <enum>QAbstractItemView::ScrollPerPixel</enum>
+      </property>
+      <property name="horizontalScrollMode">
+       <enum>QAbstractItemView::ScrollPerPixel</enum>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -80,10 +111,14 @@
    <property name="geometry">
     <rect>
      <x>440</x>
-     <y>250</y>
-     <width>121</width>
-     <height>30</height>
+     <y>260</y>
+     <width>131</width>
+     <height>41</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color:&quot;black&quot;;
+background-color:&quot;white&quot;</string>
    </property>
    <property name="text">
     <string>Show calendar</string>
@@ -95,7 +130,7 @@
      <x>-1</x>
      <y>10</y>
      <width>1011</width>
-     <height>151</height>
+     <height>131</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_3">

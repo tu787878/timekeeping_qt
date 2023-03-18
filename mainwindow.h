@@ -29,6 +29,8 @@ private slots:
     void onGetCalendar();
     void onReceivedCalendar(QJsonArray jsonArray);
     void onReceivedCalendarFail(QString error);
+    void onReceivedSetting(QJsonObject jsonArray);
+    void onReceivedSettingFail(QString error);
     void setStatusBarText(QString text, QString rgb);
     void resetStatus();
 
@@ -44,6 +46,9 @@ private:
     QString m_current_user_id = "";
     QTimer* m_timer;
     QTimer* m_timer_status;
+    QString business_name = "TCG";
+    QString m_checkin_color = "rgb(0, 255, 0)";
+    QString m_checkout_color = "rgb(0, 255, 0)";
 
 };
 #endif // MAINWINDOW_H

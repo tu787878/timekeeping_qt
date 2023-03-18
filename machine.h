@@ -32,6 +32,8 @@ signals:
   void updateStatusBar(QString text, QString rgb);
   void receivedCalendar(QJsonArray jsonArray);
   void receivedCalendarFail(QString error);
+  void receivedSetting(QJsonObject jsonObj);
+  void receivedSettingFail(QString error);
 
 private:
     void connectDevices();

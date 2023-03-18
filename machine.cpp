@@ -54,8 +54,37 @@ void Machine::connectServer()
     QStringList fields = line.split(";");
     m_url_server = fields.at(0);
     m_device_token = fields.at(1);
+    qDebug() << m_device_token;
     file.close();
-    // try to call api
+
+    // call api to get general settings: logo, success color, failed color
+    QNetworkAccessManager *mgr = new QNetworkAccessManager(this);
+    const QUrl url(m_url_server+"/settings");
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QJsonObject obj;
+    QJsonDocument doc(obj);
+    QByteArray data = doc.toJson();
+
+    QNetworkReply *reply = mgr->post(request, data);
+    qDebug() << "called api";
+    QObject::connect(reply, &QNetworkReply::finished, [=](){
+        if(reply->error() == QNetworkReply::NoError){
+            QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+            QJsonObject obj = doc.object();
+            if(obj["code"].toDouble() == 0)
+            {
+                qDebug() << obj["data"].toObject()["businessName"].toObject()["settingValue"];
+                emit receivedSetting(obj["data"].toObject());
+            }
+            else
+            {
+                qDebug() << obj["message"];
+                emit receivedSettingFail(obj["message"].toString());
+            }
+        }
+    });
 }
 
 Machine::~Machine()

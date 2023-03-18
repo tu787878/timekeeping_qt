@@ -40,6 +40,8 @@ void MainWindow::connectWidgets()
     connect(m_machine, &Machine::updateStatusBar, this, &MainWindow::setStatusBarText);
     connect(m_machine, &Machine::receivedCalendar, this, &MainWindow::onReceivedCalendar);
     connect(m_machine, &Machine::receivedCalendarFail, this, &MainWindow::onReceivedCalendarFail);
+    connect(m_machine, &Machine::receivedSetting, this, &MainWindow::onReceivedSetting);
+    connect(m_machine, &Machine::receivedSettingFail, this, &MainWindow::onReceivedSettingFail);
 }
 
 void MainWindow::exit()
@@ -76,6 +78,13 @@ void MainWindow::onScanSuccess(QString name, QString time, QString type, QString
 {
     m_scanscreen.setNameLabel(name);
     QDateTime datetime = QDateTime::fromString(time, Qt::ISODate);
+    if(type == "Checkin"){
+        setStyleSheet("background-color: "+m_checkin_color);
+        m_scanscreen.setIsCheckin(true);
+    }else{
+        setStyleSheet("background-color: "+m_checkout_color);
+        m_scanscreen.setIsCheckin(false);
+    }
     m_scanscreen.setTimeLabel(type + ": " + datetime.toString("dd.MM.yyyy HH:mm"));
     m_scanscreen.hideCalendar();
     m_current_user_id=userid;
@@ -89,6 +98,7 @@ void MainWindow::toStandBy()
     ui->stackedWidget->setCurrentIndex(0);
     ui->statusbar->showMessage("Waiting...");
     ui->statusbar->setStyleSheet("background-color: rgb(0, 255, 0);");
+    setStyleSheet("background-color: 'white'");
     m_timer->stop();
 }
 
@@ -120,6 +130,21 @@ void MainWindow::onReceivedCalendar(QJsonArray jsonArray)
 void MainWindow::onReceivedCalendarFail(QString error)
 {
     setStatusBarText("Error: " + error, "rgb(255,000,000)");
+}
+
+void MainWindow::onReceivedSetting(QJsonObject jsonObj)
+{
+//    ["businessName"].toObject()["settingValue"];
+    m_checkin_color = jsonObj["checkInColor"].toObject()["settingValue"].toString();
+    m_checkout_color = jsonObj["checkOutColor"].toObject()["settingValue"].toString();
+    business_name = jsonObj["businessName"].toObject()["settingValue"].toString();
+    m_stanbyscreen.setLogoUrl(jsonObj["logo"].toObject()["settingValue"].toString());
+    m_scanscreen.setSettings(jsonObj["logo"].toObject()["settingValue"].toString(), jsonObj["checkInColor"].toObject()["settingValue"].toString(), jsonObj["checkOutColor"].toObject()["settingValue"].toString());
+}
+
+void MainWindow::onReceivedSettingFail(QString error)
+{
+
 }
 
 MainWindow::~MainWindow()
