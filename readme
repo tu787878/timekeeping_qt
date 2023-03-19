@@ -1,0 +1,33 @@
+
+ * README auto  setname for device
+    https://unix.stackexchange.com/questions/66901/how-to-bind-usb-device-under-a-static-name
+    ATTRS{idProduct}=="ea60"
+    ATTRS{idVendor}=="10c4"
+    nano /etc/udev/rules.d/99-usb-serial.rules
+    SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", SYMLINK+="tcg_rfid"
+
+    /dev/tcg_rfid
+
+* /home/pi/Desktop/License
+
+ * auto start setup:
+ https://www.interelectronix.com/de/raspberry-pi-4-autostart-qt-anwendung-beim-booten.html
+ - /etc/systemd/system
+ - sudo nano application_one.service
+
+- [Unit]
+Description=Qt application autostart
+After=graphical.target
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/application
+ExecStart=/home/pi/application/application_one
+
+[Install]
+WantedBy=multi-user.target
+- sudo systemctl enable application_one.service
+- sudo systemctl status application_one.service
