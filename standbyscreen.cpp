@@ -19,7 +19,9 @@ StandByScreen::StandByScreen(QWidget *parent) :
     QPixmap pic(logi_url);
     ui->logo->setPixmap(pic);
 
-    ui->message->setText("Please scan your card!");
+    QDate date = QDate::currentDate();
+    QString dateStr = date.toString("dd.MM.yyyy");
+    ui->message->setText(dateStr);
 
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &StandByScreen::showTime);
@@ -42,28 +44,27 @@ void StandByScreen::setDevices(QStringList data)
 
 void StandByScreen::showTime()
 {
-    QDate date = QDate::currentDate();
-    QString dateStr = date.toString("dd.MM.yyyy");
+
     QTime time = QTime::currentTime();
     QString text = time.toString("hh:mm");
     if ((time.second() % 2) == 0)
         text[2] = ' ';
-    text = dateStr + " " + text;
+
     ui->time->setText(text);
 }
 
 void StandByScreen::resetMessage()
 {
-    ui->message->setText("Please scan your card!");
-    ui->message->setStyleSheet("font-size:35px;color: rgb(0, 0, 0);");
-    m_timer_message->stop();
+//    ui->message->setText("Please scan your card!");
+//    ui->message->setStyleSheet("font-size:35px;color: rgb(0, 0, 0);");
+//    m_timer_message->stop();
 }
 
 void StandByScreen::setMessageError(QString error)
 {
-    ui->message->setText(error);
-    ui->message->setStyleSheet("font-size:35px;color: rgb(255, 0, 0);");
-    m_timer_message->start(2000);
+//    ui->message->setText(error);
+//    ui->message->setStyleSheet("font-size:35px;color: rgb(255, 0, 0);");
+//    m_timer_message->start(2000);
 }
 
 void StandByScreen::on_closeWindow_clicked()

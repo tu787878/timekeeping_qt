@@ -46,7 +46,7 @@ border: 0px solid white </string>
      <x>-1</x>
      <y>-1</y>
      <width>1011</width>
-     <height>311</height>
+     <height>361</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -63,7 +63,7 @@ border: 0px solid white </string>
     <item>
      <widget class="QLabel" name="time">
       <property name="styleSheet">
-       <string notr="true">font-size:50px</string>
+       <string notr="true">font-size:85px</string>
       </property>
       <property name="text">
        <string>DATE TIME</string>
@@ -76,7 +76,7 @@ border: 0px solid white </string>
     <item>
      <widget class="QLabel" name="message">
       <property name="styleSheet">
-       <string notr="true">font-size:35px</string>
+       <string notr="true">font-size:30px</string>
       </property>
       <property name="text">
        <string>MESSAGE</string>
