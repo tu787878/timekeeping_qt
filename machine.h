@@ -24,6 +24,7 @@ public slots:
   void connected(QString type);
   void disconnected(QString type);
   void scanResult(QString id, QString type);
+  QString getServerUrl();
 
 signals:
   void deviceStatusChanged(QStringList type);
@@ -46,6 +47,7 @@ private:
     QString m_license_path = "/home/pi/Desktop/License";
     QString m_url_server = "";
     QString m_device_token = "";
+    QString m_scanPath = "";
 };
 
 #endif // MACHINE_H

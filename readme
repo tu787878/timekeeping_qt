@@ -13,21 +13,20 @@
  * auto start setup:
  https://www.interelectronix.com/de/raspberry-pi-4-autostart-qt-anwendung-beim-booten.html
  - /etc/systemd/system
- - sudo nano application_one.service
+ - sudo nano /etc/systemd/system/timekeeping-autostart.service
 
-- [Unit]
-Description=Qt application autostart
-After=graphical.target
-After=network-online.target
-Wants=network-online.target
+[Unit]
+Description=Auto start timekeeping app xD
+After=network.target wpa_supplicant.service
 
 [Service]
-Type=simple
-User=pi
-WorkingDirectory=/home/pi/application
-ExecStart=/home/pi/application/application_one
-
+Type=idle
+User=root
+ExecStart= startx /home/pi/Documents/timekeeping-app/build-TimeKeeping-Desktop-Release/TimeKeeping
+Restart=on-failure
+RestartSec=2
 [Install]
 WantedBy=multi-user.target
-- sudo systemctl enable application_one.service
-- sudo systemctl status application_one.service
+
+- sudo systemctl enable timekeeping-autostart.service
+- sudo systemctl start timekeeping-autostart.service

@@ -7,7 +7,7 @@
 #include <QNetworkAccessManager>
 #include <QJsonDocument>
 #include <QNetworkReply>
-
+#include <QSslConfiguration>
 
 Machine::Machine(QObject* parent) : QObject(parent)
 {
@@ -53,15 +53,21 @@ void Machine::connectServer()
     QString line = in.readLine();
     QStringList fields = line.split(";");
     m_url_server = fields.at(0);
-    m_device_token = fields.at(1);
+    m_scanPath = fields.at(1);
+    m_device_token = fields.at(2);
+    qDebug() << m_url_server;
+    qDebug() << m_scanPath;
     qDebug() << m_device_token;
     file.close();
 
     // call api to get general settings: logo, success color, failed color
     QNetworkAccessManager *mgr = new QNetworkAccessManager(this);
-    const QUrl url(m_url_server+"/settings");
+    const QUrl url(m_url_server+m_scanPath+"/settings");
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QSslConfiguration conf = request.sslConfiguration();
+    conf.setPeerVerifyMode(QSslSocket::VerifyNone);
+    request.setSslConfiguration(conf);
 
     QJsonObject obj;
     QJsonDocument doc(obj);
@@ -70,6 +76,7 @@ void Machine::connectServer()
     QNetworkReply *reply = mgr->post(request, data);
     qDebug() << "called api";
     QObject::connect(reply, &QNetworkReply::finished, [=](){
+        qDebug() << reply->errorString();
         if(reply->error() == QNetworkReply::NoError){
             QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
             QJsonObject obj = doc.object();
@@ -98,9 +105,12 @@ void Machine::getCalendar(QString user_id)
     emit updateStatusBar("Loading calendar...", "rgb(255,140,0)");
 
     QNetworkAccessManager *mgr = new QNetworkAccessManager(this);
-    const QUrl url(m_url_server+"/calendar");
+    const QUrl url(m_url_server+m_scanPath+"/calendar");
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QSslConfiguration conf = request.sslConfiguration();
+    conf.setPeerVerifyMode(QSslSocket::VerifyNone);
+    request.setSslConfiguration(conf);
 
     QJsonObject obj;
     obj["userId"] = user_id;
@@ -156,6 +166,39 @@ void Machine::rescan()
     {
         scanDevice->setRescan();
     }
+//    connectServer();
+
+    // call api to get general settings: logo, success color, failed color
+    QNetworkAccessManager *mgr = new QNetworkAccessManager(this);
+    const QUrl url(m_url_server+m_scanPath+"/settings");
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QSslConfiguration conf = request.sslConfiguration();
+    conf.setPeerVerifyMode(QSslSocket::VerifyNone);
+    request.setSslConfiguration(conf);
+
+    QJsonObject obj;
+    QJsonDocument doc(obj);
+    QByteArray data = doc.toJson();
+
+    QNetworkReply *reply = mgr->post(request, data);
+    qDebug() << "called api";
+    QObject::connect(reply, &QNetworkReply::finished, [=](){
+        if(reply->error() == QNetworkReply::NoError){
+            QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+            QJsonObject obj = doc.object();
+            if(obj["code"].toDouble() == 0)
+            {
+                qDebug() << obj["data"].toObject()["businessName"].toObject()["settingValue"];
+                emit receivedSetting(obj["data"].toObject());
+            }
+            else
+            {
+                qDebug() << obj["message"];
+                emit receivedSettingFail(obj["message"].toString());
+            }
+        }
+    });
 }
 
 void Machine::connected(QString type)
@@ -171,15 +214,23 @@ void Machine::disconnected(QString type)
     updateDeviceStatus();
 }
 
+QString Machine::getServerUrl()
+{
+    return m_url_server;
+}
+
 void Machine::scanResult(QString id, QString type)
 {
     emit updateStatusBar("Loading...", "rgb(255,140,0)");
     qDebug() << "scanResult: " + id + " - " + type;
 
     QNetworkAccessManager *mgr = new QNetworkAccessManager(this);
-    const QUrl url(m_url_server);
+    const QUrl url(m_url_server+m_scanPath);
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QSslConfiguration conf = request.sslConfiguration();
+    conf.setPeerVerifyMode(QSslSocket::VerifyNone);
+    request.setSslConfiguration(conf);
     QTime time = QTime::currentTime();
     QString formattedTime = time.toString("hh:mm");
     QDate date = QDate::currentDate();

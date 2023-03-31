@@ -76,8 +76,8 @@ void MainWindow::resetStatus()
 
 void MainWindow::onScanSuccess(QString name, QString time, QString type, QString userid)
 {
-    m_scanscreen.setNameLabel(name);
     QDateTime datetime = QDateTime::fromString(time, Qt::ISODate);
+    m_scanscreen.setNameLabel(name + " - " + datetime.toString("dd.MM.yyyy"));
     if(type == "Checkin"){
         setStyleSheet("background-color: "+m_checkin_color);
         m_scanscreen.setIsCheckin(true);
@@ -85,7 +85,7 @@ void MainWindow::onScanSuccess(QString name, QString time, QString type, QString
         setStyleSheet("background-color: "+m_checkout_color);
         m_scanscreen.setIsCheckin(false);
     }
-    m_scanscreen.setTimeLabel(type + ": " + datetime.toString("dd.MM.yyyy HH:mm"));
+    m_scanscreen.setTimeLabel(type + ": " + datetime.toString("HH:mm"));
     m_scanscreen.hideCalendar();
     m_current_user_id=userid;
     ui->stackedWidget->setCurrentIndex(1);
@@ -138,8 +138,8 @@ void MainWindow::onReceivedSetting(QJsonObject jsonObj)
     m_checkin_color = jsonObj["checkInColor"].toObject()["settingValue"].toString();
     m_checkout_color = jsonObj["checkOutColor"].toObject()["settingValue"].toString();
     business_name = jsonObj["businessName"].toObject()["settingValue"].toString();
-    m_stanbyscreen.setLogoUrl(jsonObj["logo"].toObject()["settingValue"].toString());
-    m_scanscreen.setSettings(jsonObj["logo"].toObject()["settingValue"].toString(), jsonObj["checkInColor"].toObject()["settingValue"].toString(), jsonObj["checkOutColor"].toObject()["settingValue"].toString());
+    m_stanbyscreen.setLogoUrl(m_machine->getServerUrl() + jsonObj["logo"].toObject()["settingValue"].toString());
+    m_scanscreen.setSettings(m_machine->getServerUrl() +jsonObj["logo"].toObject()["settingValue"].toString(), jsonObj["checkInColor"].toObject()["settingValue"].toString(), jsonObj["checkOutColor"].toObject()["settingValue"].toString());
 }
 
 void MainWindow::onReceivedSettingFail(QString error)

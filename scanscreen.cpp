@@ -78,7 +78,7 @@ void ScanScreen::setItems(QJsonArray jsonArray)
         }
         QTableWidgetItem* log = new QTableWidgetItem(row);
         log->setTextAlignment(Qt::AlignTop);
-        log->setTextColor(QColor::fromRgb(255,255,255));
+        log->setTextColor(QColor::fromRgb(0,0,0));
         ui->calendarList->setItem(0, i, log);
         i++;
     }
@@ -96,7 +96,7 @@ void ScanScreen::setItems(QJsonArray jsonArray)
     }
 
    // ui->calendarList->setStyleSheet("background-color:'white';QScrollBar:vertical { width: 30px;  background-color:"+c+"}QScrollBar:horizontal { height: 40px;  background-color:"+c+"}QScrollBar::handle:horizonal{background-color:'white';border: 1px solid grey;color:'black'}QScrollBar::handle:vertical{background-color:'white';border: 1px solid grey;color:'black'}");
-    ui->calendarList->setStyleSheet("QScrollBar:vertical { width: 30px; }QScrollBar:horizontal { height: 40px;  }QScrollBar::handle:horizonal{border: 2px solid grey;}QScrollBar::handle:vertical{border: 2px solid grey;}");
+    ui->calendarList->setStyleSheet("QTableView{background-color:'white'}QHeaderView::section { background-color:'white' }QScrollBar:vertical { width: 0px; }QScrollBar:horizontal { height: 40px;  background-color:'white'}QScrollBar::handle:horizonal{border: 2px solid grey;}QScrollBar::handle:vertical{border: 2px solid grey;}");
 
 }
 
